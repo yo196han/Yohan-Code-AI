@@ -1,0 +1,2 @@
+[console_scripts]
+yohan = yohan.main:main

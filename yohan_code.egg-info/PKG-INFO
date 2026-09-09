@@ -1,0 +1,109 @@
+Metadata-Version: 2.4
+Name: yohan-code
+Version: 1.0.0
+Summary: YOHAN CODE - AI Coding Assistant CLI
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+Requires-Dist: httpx>=0.27.0
+Requires-Dist: rich>=13.7.0
+Requires-Dist: python-dotenv>=1.0.0
+
+# YOHAN CODE
+
+AI coding assistant CLI — works with Groq, Gemini, Cloudflare, OpenRouter, OrcaRouter, OpenAI, Anthropic, Mistral, and Cohere.
+
+## Install
+
+```bash
+git clone <repo>
+cd yohan-code
+pip install -e .
+cp .env.example .env
+# Add your API keys to .env
+yohan
+```
+
+## Usage
+
+```bash
+yohan                                    # Start with default provider
+yohan --provider groq                    # Use Groq
+yohan --provider gemini --model gemini-1.5-pro
+yohan --chat-id abc123                   # Resume session
+yohan --list-providers                   # Show configured providers
+yohan --list-models groq                 # Show models for provider
+```
+
+## API Keys
+
+Add keys to `.env`. YOHAN rotates through them automatically when rate-limited:
+
+```env
+GROQ_API_1=gsk_...
+GROQ_API_2=gsk_...
+GEMINI_API_1=AIza...
+CLOUDFLARE_ACCOUNT_ID=abc123
+CLOUDFLARE_API_1=...
+```
+
+## Commands (in REPL)
+
+| Command | Description |
+|---------|-------------|
+| `/help` | Show all commands |
+| `/provider <name>` | Switch provider |
+| `/model <name>` | Switch model |
+| `/providers` | List available providers |
+| `/models` | List models for current provider |
+| `/skill add <path>` | Install skill from .md file |
+| `/skill list` | List installed skills |
+| `/skill remove <name>` | Remove a skill |
+| `/sandbox` | Show sandbox info |
+| `/sandbox ls` | List sandbox files |
+| `/sandbox exec <cmd>` | Run command in sandbox |
+| `/sandbox destroy` | Delete sandbox |
+| `/sandboxes` | List all sandboxes |
+| `/keys` | API key rotation status |
+| `/clear` | Clear conversation |
+| `/reset` | New session |
+| `/exit` | Quit |
+
+## Skills
+
+Skills are `.md` files placed in `skills/<name>/skill.md`.
+
+**Install a skill:**
+```
+/skill add /path/to/my-skill.md
+```
+The skill name = filename without `.md`. YOHAN will use all installed skills automatically.
+
+## Sandbox
+
+Each session gets an isolated sandbox:
+```
+yohan-code/
+└── sandbox-<chat-id>/
+    └── mnt/
+        └── sandbox-files/   ← all AI file operations happen here
+```
+
+## Providers & Models
+
+| Provider | Models |
+|----------|--------|
+| `groq` | llama-3.3-70b-versatile, llama-3.1-8b-instant, mixtral-8x7b, gemma2-9b |
+| `gemini` | gemini-2.0-flash, gemini-1.5-pro, gemini-1.5-flash |
+| `cloudflare` | llama-3.3-70b, llama-3.1-8b, mistral-7b, gemma-7b |
+| `openrouter` | llama-3.3-70b, gemini-2.0-flash, deepseek-chat, mixtral-8x7b |
+| `orcarouter` | orcarouter/auto |
+| `openai` | gpt-4o, gpt-4o-mini, gpt-4-turbo |
+| `anthropic` | claude-3-5-sonnet, claude-3-5-haiku, claude-3-opus |
+| `mistral` | mistral-large, mistral-small, mixtral-8x22b |
+| `cohere` | command-r-plus, command-r |
+
+## Gemini note
+
+`GEMINI_API_1` / `GEMINI_API` are for **Google AI Studio** keys and use Google's direct Gemini endpoint by default. Model IDs stay Google-style (`gemini-...`).
+
+If Google returns `User location is not supported`, that is a region/network block from Google, not an invalid key and not a tool-call bug. Use a network/region supported by Google AI Studio, or only then configure a Gemini-compatible proxy with `GEMINI_API_TYPE`, `GEMINI_BASE_URL`, `GEMINI_MODELS`, and `GEMINI_DEFAULT_MODEL`.
